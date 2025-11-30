@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { Pokemon } from '@prisma/client';
+
 import { prisma } from '../lib/prisma';
 
 export const createPokemonSchema = z.object({
@@ -22,16 +24,33 @@ export class PokemonService {
 	async findAll(filter?: { type?: string; ability?: string }) {
 		const where: any = {};
 
+		if (filter?.ability) {
+			const abilityTerm = `%${filter.ability}%`;
+			if (filter.type) {
+				const typeTerm = `%${filter.type}%`;
+				return prisma.$queryRaw<Pokemon[]>`
+                    SELECT * FROM "Pokemon"
+                    WHERE "type" ILIKE ${typeTerm}
+                    AND EXISTS (
+                        SELECT 1 FROM unnest("abilities") AS a
+                        WHERE a ILIKE ${abilityTerm}
+                    )
+                `;
+			} else {
+				return prisma.$queryRaw<Pokemon[]>`
+					SELECT * FROM "Pokemon" 
+					WHERE EXISTS (
+						SELECT 1 FROM unnest("abilities") AS a 
+						WHERE a ILIKE ${abilityTerm}
+					)
+				`;
+			}
+		}
+
 		if (filter?.type) {
 			where.type = {
 				contains: filter.type,
 				mode: 'insensitive',
-			};
-		}
-
-		if (filter?.ability) {
-			where.abilities = {
-				has: filter.ability,
 			};
 		}
 
