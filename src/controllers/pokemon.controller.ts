@@ -57,7 +57,7 @@ export class PokemonController {
 			const pokemon = await pokemonService.findById(id);
 
 			return reply.status(200).send({
-				succes: true,
+				success: true,
 				pokemon,
 			});
 		} catch (error) {
