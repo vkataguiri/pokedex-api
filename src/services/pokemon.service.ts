@@ -8,12 +8,14 @@ export const createPokemonSchema = z.object({
 	name: z.string().min(1),
 	type: z.string().min(1),
 	abilities: z.array(z.string()).min(1).max(3),
+	imageUrl: z.url({ message: 'Invalid image URL' }),
 	createdBy: z.string(),
 });
 
 export const updatePokemonSchema = z.object({
 	name: z.string().min(1).optional(),
 	type: z.string().min(1).optional(),
+	imageUrl: z.url({ message: 'Invalid image URL' }),
 	abilities: z.array(z.string()).min(1).max(3).optional(),
 });
 
@@ -137,6 +139,7 @@ export class PokemonService {
 				name: data.name,
 				type: data.type,
 				abilities: data.abilities,
+				imageUrl: data.imageUrl,
 				createdBy: data.createdBy,
 			},
 		});
@@ -174,6 +177,7 @@ export class PokemonService {
 			data: {
 				name: data.name,
 				type: data.type,
+				imageUrl: data.imageUrl,
 				abilities: data.abilities,
 			},
 		});

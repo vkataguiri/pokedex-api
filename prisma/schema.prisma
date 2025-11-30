@@ -21,6 +21,7 @@ model Pokemon {
   name      String   @unique
   type      String
   abilities String[]
+  imageUrl  String
 
   createdByUser User   @relation(fields: [createdBy], references: [login])
   createdBy     String

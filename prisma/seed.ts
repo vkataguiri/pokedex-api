@@ -34,16 +34,76 @@ async function main() {
 
 	if (user1) {
 		const pokemons = [
-			{ name: 'Pikachu', type: 'Elétrico', abilities: ['Choque do Trovão', 'Investida'] },
-			{ name: 'Charmander', type: 'Fogo', abilities: ['Brasa', 'Arranhão'] },
-			{ name: 'Squirtle', type: 'Água', abilities: ["Jato D'água", 'Investida'] },
-			{ name: 'Bulbasaur', type: 'Grama', abilities: ['Chicote de Vinha', 'Folha Navalha'] },
-			{ name: 'Charizard', type: 'Fogo', abilities: ['Lança-chamas', 'Voar'] },
-			{ name: 'Gengar', type: 'Fantasma', abilities: ['Bola Sombria', 'Hipnose'] },
-			{ name: 'Snorlax', type: 'Normal', abilities: ['Descansar', 'Investida Pesada'] },
-			{ name: 'Jigglypuff', type: 'Normal', abilities: ['Cantar', 'Tapa Duplo'] },
-			{ name: 'Psyduck', type: 'Água', abilities: ['Confusão', 'Arranhão'] },
-			{ name: 'Eevee', type: 'Normal', abilities: ['Ataque Rápido', 'Cauda de Ferro'] },
+			{
+				name: 'Pikachu',
+				type: 'Elétrico',
+				abilities: ['Choque do Trovão', 'Investida'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
+			},
+			{
+				name: 'Charmander',
+				type: 'Fogo',
+				abilities: ['Brasa', 'Arranhão'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
+			},
+			{
+				name: 'Squirtle',
+				type: 'Água',
+				abilities: ["Jato D'água", 'Investida'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
+			},
+			{
+				name: 'Bulbasaur',
+				type: 'Grama',
+				abilities: ['Chicote de Vinha', 'Folha Navalha'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
+			},
+			{
+				name: 'Charizard',
+				type: 'Fogo',
+				abilities: ['Lança-chamas', 'Voar'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png',
+			},
+			{
+				name: 'Gengar',
+				type: 'Fantasma',
+				abilities: ['Bola Sombria', 'Hipnose'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png',
+			},
+			{
+				name: 'Snorlax',
+				type: 'Normal',
+				abilities: ['Descansar', 'Investida Pesada'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
+			},
+			{
+				name: 'Jigglypuff',
+				type: 'Normal',
+				abilities: ['Cantar', 'Tapa Duplo'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
+			},
+			{
+				name: 'Psyduck',
+				type: 'Água',
+				abilities: ['Confusão', 'Arranhão'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png',
+			},
+			{
+				name: 'Eevee',
+				type: 'Normal',
+				abilities: ['Ataque Rápido', 'Cauda de Ferro'],
+				imageUrl:
+					'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
+			},
 		];
 
 		for (const p of pokemons) {
@@ -54,6 +114,7 @@ async function main() {
 					name: p.name,
 					type: p.type,
 					abilities: p.abilities,
+					imageUrl: p.imageUrl,
 					createdBy: user1.login,
 				},
 			});
