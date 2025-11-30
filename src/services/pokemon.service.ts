@@ -25,14 +25,13 @@ export class PokemonService {
 		if (filter?.type) {
 			where.type = {
 				contains: filter.type,
-				modde: 'insensitive',
+				mode: 'insensitive',
 			};
 		}
 
 		if (filter?.ability) {
-			where.type = {
-				contains: filter.ability,
-				modde: 'insensitive',
+			where.abilities = {
+				has: filter.ability,
 			};
 		}
 
