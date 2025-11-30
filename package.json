@@ -1,0 +1,33 @@
+{
+	"name": "api-pokedex",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon src/server.ts",
+		"build": "tsc",
+		"start": "node dist/server.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@fastify/cors": "^11.1.0",
+		"@prisma/client": "^5.21.0",
+		"dotenv": "^17.2.3",
+		"fastify": "^5.6.2",
+		"zod": "^4.1.13"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"nodemon": "^3.1.11",
+		"prisma": "^5.21.0",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	},
+	"prisma": {
+		"seed": "tsx prisma/seed.ts"
+	}
+}
