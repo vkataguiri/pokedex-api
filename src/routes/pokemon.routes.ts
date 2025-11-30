@@ -5,6 +5,8 @@ import { PokemonController } from '../controllers/pokemon.controller';
 const pokemonController = new PokemonController();
 
 export async function pokemonRoutes(app: FastifyInstance) {
+	app.addHook('onRequest', app.authenticate);
+
 	app.get('/pokemon', pokemonController.list);
 	app.get('/pokemon/:id', pokemonController.getById);
 

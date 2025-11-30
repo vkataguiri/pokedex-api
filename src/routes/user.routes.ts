@@ -12,5 +12,5 @@ export async function userRoutes(app: FastifyInstance) {
 
 	app.put('/users/:id', userController.update);
 
-	app.delete('/users/:id', userController.delete);
+	app.delete('/users/:id', { onRequest: [app.authenticate] }, userController.delete);
 }

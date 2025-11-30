@@ -1,13 +1,21 @@
+import { hash } from 'bcryptjs';
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-	console.log('Starting DB default users...');
+	console.log('Starting DB seed...');
+
+	await prisma.pokemon.deleteMany();
+	await prisma.user.deleteMany();
+
+	const passwordHash = await hash('123', 6);
+
 	const users = [
-		{ login: 'user1', password: '123' },
-		{ login: 'user2', password: '123' },
-		{ login: 'user3', password: '123' },
+		{ login: 'user1', password: passwordHash },
+		{ login: 'user2', password: passwordHash },
+		{ login: 'user3', password: passwordHash },
 	];
 
 	for (const u of users) {

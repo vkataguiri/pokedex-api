@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { optional, z } from 'zod';
 
 import { prisma } from '../lib/prisma';
@@ -54,10 +55,12 @@ export class UserService {
 			throw new Error('USER_ALREADY_EXISTS');
 		}
 
+		const passwordHash = await hash(data.password, 6);
+
 		const user = await prisma.user.create({
 			data: {
 				login: data.login,
-				password: data.password,
+				password: passwordHash,
 			},
 		});
 
@@ -89,11 +92,16 @@ export class UserService {
 			}
 		}
 
+		let passwordHash = undefined;
+		if (data.password) {
+			passwordHash = await hash(data.password, 6);
+		}
+
 		const updatedUser = await prisma.user.update({
 			where: { id },
 			data: {
 				login: data.login,
-				password: data.password,
+				password: passwordHash,
 			},
 			select: {
 				id: true,

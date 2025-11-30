@@ -1,3 +1,4 @@
+import { compare } from 'bcryptjs';
 import { z } from 'zod';
 
 import { prisma } from '../lib/prisma';
@@ -15,13 +16,20 @@ export class AuthService {
 			where: { login: data.login },
 		});
 
-		if (!user || user.password !== data.password) {
+		if (!user) {
+			throw new Error('INVALID_CREDENTIALS');
+		}
+
+		const passwordMatch = await compare(data.password, user.password);
+
+		if (!passwordMatch) {
 			throw new Error('INVALID_CREDENTIALS');
 		}
 
 		return {
 			id: user.id,
 			login: user.login,
+			name: user.login,
 		};
 	}
 }

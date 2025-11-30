@@ -16,9 +16,20 @@ export class AuthController {
 			const { login, password } = loginBodySchema.parse(request.body);
 			const user = await authService.login({ login, password });
 
+			const token = await reply.jwtSign(
+				{
+					id: user.id,
+					login: user.login,
+				},
+				{
+					sign: { expiresIn: '7d' },
+				}
+			);
+
 			return reply.status(200).send({
 				message: 'Successfully logged in',
 				success: true,
+				token,
 				user,
 			});
 		} catch (error) {
