@@ -12,9 +12,32 @@ export const createPokemonSchema = z.object({
 type CreatePokemonInput = z.infer<typeof createPokemonSchema>;
 
 export class PokemonService {
+	async findAll() {
+		const pokemon = await prisma.pokemon.findMany();
+
+		return pokemon;
+	}
+
+	async findById(id: string) {
+		const pokemon = await prisma.pokemon.findUnique({
+			where: { id },
+		});
+
+		if (!pokemon) {
+			throw new Error('POKEMON_NOT_FOUND');
+		}
+
+		return pokemon;
+	}
+
 	async createPokemon(data: CreatePokemonInput) {
-		const pokemonExists = await prisma.pokemon.findUnique({
-			where: { name: data.name },
+		const pokemonExists = await prisma.pokemon.findFirst({
+			where: {
+				name: {
+					equals: data.name,
+					mode: 'insensitive',
+				},
+			},
 		});
 
 		if (pokemonExists) {
@@ -39,5 +62,19 @@ export class PokemonService {
 		});
 
 		return pokemon;
+	}
+
+	async delete(id: string) {
+		const pokemon = await prisma.pokemon.findUnique({
+			where: { id },
+		});
+
+		if (!pokemon) {
+			throw new Error('POKEMON_NOT_FOUND');
+		}
+
+		await prisma.pokemon.delete({
+			where: { id },
+		});
 	}
 }

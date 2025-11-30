@@ -6,6 +6,52 @@ import { createPokemonSchema, PokemonService } from '../services/pokemon.service
 const pokemonService = new PokemonService();
 
 export class PokemonController {
+	async list(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			const pokemon = await pokemonService.findAll();
+
+			return reply.status(200).send({
+				success: true,
+				pokemon,
+			});
+		} catch (error) {
+			console.error(error);
+			reply.status(500).send({
+				success: false,
+				message: 'Internal server error.',
+			});
+		}
+	}
+
+	async getById(request: FastifyRequest, reply: FastifyReply) {
+		const getPokemonParamsSchema = z.object({
+			id: z.uuid({ message: 'Invalid ID.' }),
+		});
+
+		try {
+			const { id } = getPokemonParamsSchema.parse(request.params);
+			const pokemon = await pokemonService.findById(id);
+
+			return reply.status(200).send({
+				succes: true,
+				pokemon,
+			});
+		} catch (error) {
+			if (error instanceof Error && error.message === 'POKEMON_NOT_FOUND') {
+				return reply.status(404).send({
+					success: false,
+					message: 'Pokemon not found.',
+				});
+			}
+
+			console.error(error);
+			return reply.status(500).send({
+				success: false,
+				message: 'Internal server error.',
+			});
+		}
+	}
+
 	async create(request: FastifyRequest, reply: FastifyReply) {
 		try {
 			const data = createPokemonSchema.parse(request.body);
@@ -44,6 +90,35 @@ export class PokemonController {
 			return reply.status(500).send({
 				success: false,
 				message: 'Internal server error',
+			});
+		}
+	}
+
+	async delete(request: FastifyRequest, reply: FastifyReply) {
+		const getPokemonParamsSchema = z.object({
+			id: z.uuid({ message: 'Invalid ID.' }),
+		});
+
+		try {
+			const { id } = getPokemonParamsSchema.parse(request.params);
+			const pokemon = await pokemonService.delete(id);
+
+			return reply.status(200).send({
+				succes: true,
+				message: 'Pokemon successfully removed.',
+			});
+		} catch (error) {
+			if (error instanceof Error && error.message === 'POKEMON_NOT_FOUND') {
+				return reply.status(404).send({
+					success: false,
+					message: 'Pokemon not found.',
+				});
+			}
+
+			console.error(error);
+			return reply.status(500).send({
+				success: false,
+				message: 'Internal server error.',
 			});
 		}
 	}
