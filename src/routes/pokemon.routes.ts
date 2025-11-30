@@ -7,12 +7,11 @@ const pokemonController = new PokemonController();
 export async function pokemonRoutes(app: FastifyInstance) {
 	app.addHook('onRequest', app.authenticate);
 
+	app.get('/pokemon/dashboard', pokemonController.dashboard);
 	app.get('/pokemon', pokemonController.list);
 	app.get('/pokemon/:id', pokemonController.getById);
 
 	app.post('/pokemon', pokemonController.create);
-
-	app.delete('/pokemon/:id', pokemonController.delete);
-
 	app.put('/pokemon/:id', pokemonController.update);
+	app.delete('/pokemon/:id', pokemonController.delete);
 }

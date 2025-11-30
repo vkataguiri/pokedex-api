@@ -19,10 +19,65 @@ type CreatePokemonInput = z.infer<typeof createPokemonSchema>;
 type UpdatePokemonSchema = z.infer<typeof updatePokemonSchema>;
 
 export class PokemonService {
-	async findAll() {
-		const pokemon = await prisma.pokemon.findMany();
+	async findAll(filter?: { type?: string; ability?: string }) {
+		const where: any = {};
+
+		if (filter?.type) {
+			where.type = {
+				contains: filter.type,
+				modde: 'insensitive',
+			};
+		}
+
+		if (filter?.ability) {
+			where.type = {
+				contains: filter.ability,
+				modde: 'insensitive',
+			};
+		}
+
+		const pokemon = await prisma.pokemon.findMany({ where });
 
 		return pokemon;
+	}
+
+	async getDashboardStats() {
+		const total = await prisma.pokemon.count();
+
+		const typesGroup = await prisma.pokemon.groupBy({
+			by: ['type'],
+			_count: { type: true },
+			orderBy: { _count: { type: 'desc' } },
+			take: 3,
+		});
+
+		const topTypes = typesGroup.map((t) => ({
+			name: t.type,
+			count: t._count.type,
+		}));
+
+		const allPokemons = await prisma.pokemon.findMany({
+			select: { abilities: true },
+		});
+
+		const abilityCounts: Record<string, number> = {};
+		allPokemons.forEach((p) => {
+			p.abilities.forEach((ability) => {
+				const normalized = ability.trim();
+				abilityCounts[normalized] = (abilityCounts[normalized] || 0) + 1;
+			});
+		});
+
+		const topAbilities = Object.entries(abilityCounts)
+			.map(([name, count]) => ({ name, count }))
+			.sort((a, b) => b.count - a.count)
+			.slice(0, 3);
+
+		return {
+			total,
+			topTypes,
+			topAbilities,
+		};
 	}
 
 	async findById(id: string) {

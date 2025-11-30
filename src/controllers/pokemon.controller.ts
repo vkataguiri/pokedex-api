@@ -10,8 +10,13 @@ const pokemonService = new PokemonService();
 
 export class PokemonController {
 	async list(request: FastifyRequest, reply: FastifyReply) {
+		const querySchema = z.object({
+			type: z.string().optional(),
+			ability: z.string().optional(),
+		});
 		try {
-			const pokemon = await pokemonService.findAll();
+			const filters = querySchema.parse(request.query);
+			const pokemon = await pokemonService.findAll(filters);
 
 			return reply.status(200).send({
 				success: true,
@@ -22,6 +27,22 @@ export class PokemonController {
 			reply.status(500).send({
 				success: false,
 				message: 'Internal server error.',
+			});
+		}
+	}
+
+	async dashboard(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			const stats = await pokemonService.getDashboardStats();
+			return reply.status(200).send({
+				success: true,
+				stats,
+			});
+		} catch (error) {
+			console.error(error);
+			return reply.status(500).send({
+				success: false,
+				message: 'Error fetching dashboard stats.',
 			});
 		}
 	}
