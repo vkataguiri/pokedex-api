@@ -9,7 +9,14 @@ export const createPokemonSchema = z.object({
 	createdBy: z.string(),
 });
 
+export const updatePokemonSchema = z.object({
+	name: z.string().min(1).optional(),
+	type: z.string().min(1).optional(),
+	abilities: z.array(z.string()).min(1).max(3).optional(),
+});
+
 type CreatePokemonInput = z.infer<typeof createPokemonSchema>;
+type UpdatePokemonSchema = z.infer<typeof updatePokemonSchema>;
 
 export class PokemonService {
 	async findAll() {
@@ -30,7 +37,7 @@ export class PokemonService {
 		return pokemon;
 	}
 
-	async createPokemon(data: CreatePokemonInput) {
+	async create(data: CreatePokemonInput) {
 		const pokemonExists = await prisma.pokemon.findFirst({
 			where: {
 				name: {
@@ -62,6 +69,43 @@ export class PokemonService {
 		});
 
 		return pokemon;
+	}
+
+	async update(id: string, data: UpdatePokemonSchema) {
+		const existingPokemon = await prisma.pokemon.findUnique({
+			where: { id },
+		});
+
+		if (!existingPokemon) {
+			throw new Error('POKEMON_NOT_FOUND');
+		}
+
+		// check if pokemon name already exists
+		if (data.name && data.name !== existingPokemon.name) {
+			const nameTaken = await prisma.pokemon.findFirst({
+				where: {
+					name: {
+						equals: data.name,
+						mode: 'insensitive',
+					},
+				},
+			});
+
+			if (nameTaken) {
+				throw new Error('POKEMON_NAME_ALREADY_EXISTS');
+			}
+		}
+
+		const updatedPokemon = await prisma.pokemon.update({
+			where: { id },
+			data: {
+				name: data.name,
+				type: data.type,
+				abilities: data.abilities,
+			},
+		});
+
+		return updatedPokemon;
 	}
 
 	async delete(id: string) {

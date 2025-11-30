@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import z, { success } from 'zod';
 
-import { createUserSchema, UserService } from '../services/user.service';
+import { createUserSchema, updateUserSchame, UserService } from '../services/user.service';
 
 const userService = new UserService();
 
@@ -64,7 +64,7 @@ export class UserController {
 	async create(request: FastifyRequest, reply: FastifyReply) {
 		try {
 			const data = createUserSchema.parse(request.body);
-			const user = await userService.createUser(data);
+			const user = await userService.create(data);
 
 			return reply.status(201).send({
 				message: 'User successfully created.',
@@ -77,6 +77,58 @@ export class UserController {
 			return reply.status(500).send({
 				success: false,
 				message: 'Error creating user.',
+			});
+		}
+	}
+
+	async update(request: FastifyRequest, reply: FastifyReply) {
+		const getUserParamsSchema = z.object({
+			id: z.uuid({ message: 'ID inválido' }),
+		});
+
+		try {
+			const { id } = getUserParamsSchema.parse(request.params);
+			const data = updateUserSchame.parse(request.body);
+
+			if (!data.login && !data.password) {
+				return reply.status(400).send({ message: 'No fields were updated.' });
+			}
+
+			const user = await userService.update(id, data);
+
+			return reply.status(200).send({
+				success: true,
+				message: 'User successfully updated.',
+			});
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				return reply.status(400).send({
+					success: false,
+					message: 'Invalid data.',
+					errors: error.issues,
+				});
+			}
+
+			if (error instanceof Error) {
+				if (error.message === 'USER_NOT_FOUND') {
+					return reply.status(404).send({
+						success: false,
+						message: 'User not found.',
+					});
+				}
+
+				if (error.message === 'LOGIN_ALREADY_TAKEN') {
+					return reply.status(409).send({
+						success: false,
+						message: 'This username is already taken.',
+					});
+				}
+			}
+
+			console.error(error);
+			return reply.status(500).send({
+				success: false,
+				message: 'Internal server error',
 			});
 		}
 	}

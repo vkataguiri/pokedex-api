@@ -11,4 +11,6 @@ export async function pokemonRoutes(app: FastifyInstance) {
 	app.post('/pokemon', pokemonController.create);
 
 	app.delete('/pokemon/:id', pokemonController.delete);
+
+	app.put('/pokemon/:id', pokemonController.update);
 }
