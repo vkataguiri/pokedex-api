@@ -15,7 +15,7 @@ export const createPokemonSchema = z.object({
 export const updatePokemonSchema = z.object({
 	name: z.string().min(1).optional(),
 	type: z.string().min(1).optional(),
-	imageUrl: z.url({ message: 'Invalid image URL' }),
+	imageUrl: z.url({ message: 'Invalid image URL' }).optional(),
 	abilities: z.array(z.string()).min(1).max(3).optional(),
 });
 
